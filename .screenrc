@@ -1,0 +1,25 @@
+# Encoding
+defencodig utf-8
+
+# Prefix Key
+#escape ^Jj
+
+# set scrollback
+defscrollback 1000000
+
+# Delete sartt up screen
+startup_message off
+
+# Enable Auto detach
+ autodetach on
+
+# logging
+log on
+deflog on
+logfile \"/Users/YourName/screen/log/screen-%Y%m%d-%n.log\"
+
+# Disabel flash on display
+vbell off
+
+# Show date and screen list
+hardstatus alwayslastline '%{= kw}%02c:%s %{= .y}%H %L=%{= .b}%-w%46>%{= .r}%n %t*%{= .b}%+w%-16=%{= .y}[%l]'
