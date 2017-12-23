@@ -17,6 +17,18 @@
 ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 
+; ====================================
+; 最近使ったファイル」を（メニューに）表示する
+;====================================
+; M-x recentf-open-files で履歴一覧バッファが表示される。
+(require 'recentf)
+;;http://homepage.mac.com/zenitani/elisp-j.html#recentf
+;; /sudo:hogehoge などが履歴に残っていると、起動時に毎回パ
+;; スワードを聞いてくるのでその履歴だけを削除する。
+(setq recentf-auto-cleanup 'never) ;;tramp対策。
+(recentf-mode 1)
+
+
 ;;;; for ctags.el
 (require 'ctags-update)
 (autoload 'turn-on-ctags-auto-update-mode "ctags-update" "turn on `ctags-auto-update-mode'." t)
