@@ -1,30 +1,42 @@
-; load path
-;(setq load-path (cons "~/.emacs.d/" load-path))
+;; load path
+(setq load-path 
+      (append '(
+		"~/.emacs.d/git-modes"
+		) load-path))
 
-; key bind & no backup
+;; M-x gitattributes-mode, gitconfig-mode, gitignore-mode の追加
+(load "git-modes.el")
+(require 'git-modes)
+
+;; M-x diff-mode の表示色を変更
+;; http://www.clear-code.com/blog/2012/4/3.html
+(load "git-commit-color.el")
+(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG\\'" . diff-mode))
+
+;; no start up
+(setq inhibit-startup-screen t)
+
+;; key bind & no backup
 (keyboard-translate ?\C-h ?\C-?)
 (setq make-backup-files nil)
 
-; Ctrl + 上下キーで分割したバッファの境界線を上下できる
+;; Ctrl + 上下キーで分割したバッファの境界線を上下できる
 (global-set-key [(ctrl up)] '(lambda (arg) (interactive "p") (shrink-window arg)))
 (global-set-key [(ctrl down)] '(lambda (arg) (interactive "p") (shrink-window (- arg))))
 
-; パッケージリポジトリ(これ以降に個別のパッケージをrequireすること）
+;; パッケージリポジトリ(これ以降に個別のパッケージをrequireすること）
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 
 ; ====================================
-; 最近使ったファイル」を（メニューに）表示する
+; 最近使ったファイルを（メニューに）表示する
 ;====================================
 ; M-x recentf-open-files で履歴一覧バッファが表示される。
+; http://homepage.mac.com/zenitani/elisp-j.html#recentf
 (require 'recentf)
-;;http://homepage.mac.com/zenitani/elisp-j.html#recentf
-;; /sudo:hogehoge などが履歴に残っていると、起動時に毎回パ
-;; スワードを聞いてくるのでその履歴だけを削除する。
 (setq recentf-auto-cleanup 'never) ;;tramp対策。
 (recentf-mode 1)
 
@@ -48,9 +60,6 @@
 (ac-config-default)
 
 
-;; Standard Jedi.el setting
-;;(add-hook 'python-mode-hook 'jedi:setup)
-;;(setq jedi:complete-on-dot t)                 ; optional
 ;===============
 ; jedi (package.elの設定より下に書く)
 ;===============
@@ -59,7 +68,7 @@
 (require 'python)
 
 ;;;;; PYTHONPATH上のソースコードがauto-completeの補完対象になる ;;;;;
-(setenv "PYTHONPATH" "/usr/local/lib/python2.7/site-packages")
+(setenv "PYTHONPATH" "/usr/local/lib/anaconda3/pkgs")
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
