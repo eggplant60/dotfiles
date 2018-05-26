@@ -4,9 +4,17 @@
 		"~/.emacs.d/git-modes"
 		) load-path))
 
+;; パッケージリポジトリ(これ以降に個別のパッケージをrequireすること）
+(require 'package)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(package-initialize)
+
 ;; M-x gitattributes-mode, gitconfig-mode, gitignore-mode の追加
-(load "git-modes.el")
 (require 'git-modes)
+(load "git-modes.el")
 
 ;; M-x diff-mode の表示色を変更
 ;; http://www.clear-code.com/blog/2012/4/3.html
@@ -20,26 +28,35 @@
 (keyboard-translate ?\C-h ?\C-?)
 (setq make-backup-files nil)
 
-;; Ctrl + 上下キーで分割したバッファの境界線を上下できる
-(global-set-key [(ctrl up)] '(lambda (arg) (interactive "p") (shrink-window arg)))
-(global-set-key [(ctrl down)] '(lambda (arg) (interactive "p") (shrink-window (- arg))))
+;; ;; Ctrl + 上下キーで分割したバッファの境界線を上下できる
+;; (global-set-key [(ctrl up)] '(lambda (arg) (interactive "p") (shrink-window arg)))
+;; (global-set-key [(ctrl down)] '(lambda (arg) (interactive "p") (shrink-window (- arg))))
 
-;; パッケージリポジトリ(これ以降に個別のパッケージをrequireすること）
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
+;; Shift + カーソルキーで移動
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
+(global-set-key [left] 'windmove-left)
+(global-set-key [right] 'windmove-right)
+(global-set-key [up] 'windmove-up)
+(global-set-key [down] 'windmove-down)
 
+;; eshell のキーバインド
+(global-set-key [f9] 'eshell)
 
-; ====================================
+;; ElScreen
+(require 'elscreen)
+(load "~/.emacs.d/140905083429.elscreen.el")
+
+;; remote のファイルを編集
+(require 'tramp)
+(setq tramp-default-method "ssh")
+
 ; 最近使ったファイルを（メニューに）表示する
-;====================================
 ; M-x recentf-open-files で履歴一覧バッファが表示される。
 ; http://homepage.mac.com/zenitani/elisp-j.html#recentf
 (require 'recentf)
 (setq recentf-auto-cleanup 'never) ;;tramp対策。
 (recentf-mode 1)
-
 
 ;;;; for ctags.el
 (require 'ctags-update)
@@ -60,9 +77,8 @@
 (ac-config-default)
 
 
-;===============
+
 ; jedi (package.elの設定より下に書く)
-;===============
 (require 'epc)
 (require 'auto-complete-config)
 (require 'python)
