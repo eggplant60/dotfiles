@@ -26,6 +26,16 @@
 ;; 2018/6/17 flycheck (エラーチェック)
 ;(add-hook 'after-init-hook #'global-flycheck-mode)
 
+;; 2018/6/21 C-c, C-l で ghci の起動
+(setq haskell-program-name "/usr/bin/ghci")
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+;; 2018/6/21 編集した hs ファイルのオートリロード
+(defadvice inferior-haskell-load-file (after change-focus-after-load)
+  "Change focus to GHCi window after C-c C-l command"
+  (other-window 1))
+(ad-activate 'inferior-haskell-load-file)
+
 ;; M-x gitattributes-mode, gitconfig-mode, gitignore-mode の追加
 (require 'git-modes)
 (load "git-modes.el")
