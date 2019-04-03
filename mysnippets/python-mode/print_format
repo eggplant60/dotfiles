@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: print_format
+# key: print
+# --
+print('{}'.format())
