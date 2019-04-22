@@ -1,8 +1,3 @@
-;; load path
-(setq load-path 
-      (append '(
-		"~/.emacs.d/git-modes"
-		) load-path))
 
 ;; パッケージリポジトリ(これ以降に個別のパッケージをrequireすること）
 (require 'package)
@@ -12,6 +7,7 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (package-initialize)
 
+;; --- Haskel 関連 ----
 ;; 2018/6/17 haskell-mode
 (autoload 'haskell-mode "haskell-mode" nil t)
 (autoload 'haskell-cabal "haskell-cabal" nil t)
@@ -23,9 +19,6 @@
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
-;; 2018/6/17 flycheck (エラーチェック)
-;(add-hook 'after-init-hook #'global-flycheck-mode)
-
 ;; 2018/6/21 C-c, C-l で ghci の起動
 (setq haskell-program-name "/usr/bin/ghci")
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
@@ -35,26 +28,27 @@
   "Change focus to GHCi window after C-c C-l command"
   (other-window 1))
 (ad-activate 'inferior-haskell-load-file)
+;; -----------------
 
+
+;; --- git 関連 ---
 ;; M-x gitattributes-mode, gitconfig-mode, gitignore-mode の追加
+(add-to-list 'load-path "~/.emacs.d/el_link/git-modes")
 (require 'git-modes)
 (load "git-modes.el")
 
-;; M-x diff-mode の表示色を変更
-;; http://www.clear-code.com/blog/2012/4/3.html
+;; M-x diff-mode の表示色を変更, http://www.clear-code.com/blog/2012/4/3.html
 (load "git-commit-color.el")
 (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG\\'" . diff-mode))
+;; -----------------
 
+;; --- 一般的な設定 ---
 ;; no start up
 (setq inhibit-startup-screen t)
 
 ;; key bind & no backup
 (keyboard-translate ?\C-h ?\C-?)
 (setq make-backup-files nil)
-
-;; ;; Ctrl + 上下キーで分割したバッファの境界線を上下できる
-;; (global-set-key [(ctrl up)] '(lambda (arg) (interactive "p") (shrink-window arg)))
-;; (global-set-key [(ctrl down)] '(lambda (arg) (interactive "p") (shrink-window (- arg))))
 
 ;; Shift + カーソルキーで移動
 (windmove-default-keybindings)
@@ -68,9 +62,8 @@
 (global-set-key [f9] 'eshell)
 
 ;; Elscreen
-
 (require 'elscreen)
-(load "~/.emacs.d/140905083429.elscreen.el")
+(load "~/.emacs.d/el_link/elscreen.el")
 
 ;; remote のファイルを編集
 (require 'tramp)
@@ -90,16 +83,13 @@
 (add-hook 'emacs-lisp-mode-hook  'turn-on-ctags-auto-update-mode)
 
 ;; auto-complete
-;; (require 'company)
-;; (global-company-mode) ; 全バッファで有効にする
-;; (setq company-idle-delay 0) ; デフォルトは0.5
-;; (setq company-minimum-prefix-length 2) ; デフォルトは4
-;; (setq company-selection-wrap-around t) ; 候補の一番下でさらに下に行こうとすると一番上に戻る
 (require 'auto-complete)
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (ac-config-default)
+;; -----------------
 
+;; --- Python 関連 ---
 ;; jedi (package.elの設定より下に書く)
 (require 'epc)
 (require 'auto-complete-config)
@@ -111,12 +101,24 @@
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 
+;; autopep8 (2019/04/22)
+(load "~/.emacs.d/el_link/py-autopep8.el")
+
+(require 'py-autopep8)
+(define-key python-mode-map (kbd "C-c F") 'py-autopep8)          ; バッファ全体のコード整形
+(define-key python-mode-map (kbd "C-c f") 'py-autopep8-region)   ; 選択リジョン内のコード整形
+
+;; 保存時にバッファ全体を自動整形する
+(add-hook 'before-save-hook 'py-autopep8-before-save)
+;; -----------------
+
+
 ;; 2019/04/03 スニペット
 ;; http://vdeep.net/emacs-yasnippet
 (require 'yasnippet)
 (setq yas-snippet-dirs
-      '("~/dotfiles/mysnippets"
-	"~/dotfiles/yasnippets"
+      '("~/.emacs.d/el_link/dotfiles/mysnippets"
+	"~/.emacs.d/el_link/dotfiles/yasnippets"
 	))
 
 ;; 既存スニペットを挿入する
@@ -125,5 +127,17 @@
 (define-key yas-minor-mode-map (kbd "C-x i n") 'yas-new-snippet)
 ;; 既存スニペットを閲覧・編集する
 (define-key yas-minor-mode-map (kbd "C-x i v") 'yas-visit-snippet-file)
-
 (yas-global-mode 1)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(vc-follow-symlinks t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
